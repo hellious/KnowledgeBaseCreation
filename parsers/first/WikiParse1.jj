@@ -1,0 +1,938 @@
+
+options {
+  LOOKAHEAD = 3;
+  UNICODE_INPUT = true;
+  FORCE_LA_CHECK = true;
+}
+
+
+PARSER_BEGIN(WikiParse1)
+package parsers.first;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+/** Wikipedia Article Parser (1st pass). */
+public class WikiParse1 {
+
+    static boolean inList = false;
+    static boolean noFinalPunctuation = true;
+    static int recursiveCalls = 0;
+
+  /** Main entry point. */
+  public static void main(String args[]) throws ParseException, FileNotFoundException, IOException {
+	WikiParse1 parser = new WikiParse1(new FileInputStream(args[0]));
+	String s = parser.Article();
+	FileOutputStream output = new FileOutputStream(args[1]);
+	final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(output), 1024);
+	bw.write(s);
+	bw.close();
+  }
+
+}
+
+PARSER_END(WikiParse1)
+
+
+TOKEN :
+{
+   < TAGLSLASH: "</" >
+|  < TAGLEXCLAMDASHDASH: "<!--" >
+|  < TAGL: "<" >
+|  < SLASHTAGR: "/>" >
+|  < DASHDASHTAGR: "-->" >
+|  < TAGR: ">" >
+|  < APOST: "\'" >
+|  < QUOTE: "\"" >
+|  < SLASH: "/" >
+|  < DASH: "-" >
+|  < UNDERLINE: "_" >
+|  < SHARP: "#" >
+|  < STAR: "*" >
+|  < SEMICOLON: ";" >
+|  < COMMA: "," >
+|  < PERIOD: "." >
+|  < COLON: ":" >
+|  < BAR: "|" >
+|  < EXCLAM: "!" >
+|  < INTERR: "?" >
+|  < NEWLINE: "\n" >
+|  < EQUAL: "=" >
+|  < AMPERSAND: "&" >
+|  < SPACE: " " >
+|  < DIGIT: ["0" - "9"] >
+|  < LOWERCASE: ["a" - "z"] >
+|  < UPPERCASE: ["A" - "Z"] >
+|  < OTHER: ~[] >
+}
+
+
+
+/* *********************************************************** */
+
+/** Root production. */
+String Article() :
+{
+  String t;
+  String s = "";
+}
+{
+    ( t=WellFormed() 
+  {
+//  recursiveCalls = 0;
+    s = s + t;
+  }
+    )+
+  { return s; }
+}
+
+/* *********************************************************** */
+
+String WellFormed() :
+{
+  String t;
+  String s = "";
+}
+{
+    ( t=NewLine()
+  { s = s + t; }
+    | t=Line()
+  {
+//    recursiveCalls++;
+//    if (recursiveCalls == 1000) {
+//        recursiveCalls = 0;
+//        throw(new ParseException("Too many recursive calls (long article)."));
+//    }
+    s = s + t;
+  }
+) [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line()
+  { s = s + t; }
+] [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line()
+  { s = s + t; }
+] [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line()
+  { s = s + t; }
+] [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line()
+  { s = s + t; }
+] [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line()
+  { s = s + t; }
+] [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line()
+  { s = s + t; }
+] [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line()
+  { s = s + t; }
+] [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line()
+  { s = s + t; }
+] [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line()
+  { s = s + t; }
+]
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String WellFormed1() :
+{
+  String t;
+  String s = "";
+}
+{
+    ( t=NewLine()
+  { s = s + t; }
+    | t=LineText()
+  {
+//    recursiveCalls++;
+//    if (recursiveCalls == 1000) {
+//	recursiveCalls = 0;
+//	throw(new ParseException("Too many recursive calls (long article)."));
+//    }
+    s = s + t;
+  }
+    ) ( t=NewLine()
+  { s = s + t; }
+    | t=Line()
+  {
+//    recursiveCalls++;
+//    if (recursiveCalls == 1000) {
+//        recursiveCalls = 0;
+//        throw(new ParseException("Too many recursive calls (long article)."));
+//    }
+    s = s + t;
+  }
+    )*
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String WellFormed2() :
+{
+  String t;
+  String s = "";
+}
+{
+    ( t=NewLine()
+  { s = s + t; }
+    | t=Line1()
+  {
+//    recursiveCalls++;
+//    if (recursiveCalls == 1000) {
+//        recursiveCalls = 0;
+//        throw(new ParseException("Too many recursive calls (long article)."));
+//    }
+    s = s + t;
+  }
+) [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line1()
+  { s = s + t; }
+] [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line1()
+  { s = s + t; }
+] [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line1()
+  { s = s + t; }
+] [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line1()
+  { s = s + t; }
+] [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line1()
+  { s = s + t; }
+] [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line1()
+  { s = s + t; }
+] [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line1()
+  { s = s + t; }
+] [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line1()
+  { s = s + t; }
+] [
+    t=NewLine()
+  { s = s + t; }
+    | t=Line1()
+  { s = s + t; }
+]
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String Line() :
+{
+  String t;
+  String s = "";
+}
+{
+    ( LineFormatting()
+  { inList = true; }
+    [ t=LineText()
+  { s = s + t; }
+    ]
+  { return s; }
+) | (
+    ( t=Marks1()
+  { s = s + t; }
+    | t=Remove()
+  { s = s + t; }
+    | t=NormalChar()
+  { s = s + t; }
+    ) [ t=LineText()
+  { s = s + t; }
+    ]
+  { return s; }
+) |
+    t=Equals()
+  {
+    s = s + t;
+    return s;
+  }
+}
+
+
+/* *********************************************************** */
+
+String Line1() :
+{
+  String t;
+  String s = "";
+}
+{
+    ( LineFormatting()
+  { inList = true; }
+    [ t=LineText2()
+  { s = s + t; }
+    ]
+  { return s; }
+) | (
+    ( t=Marks1()
+  { s = s + t; }
+    | t=Remove1()
+  { s = s + t; }
+    | t=NormalChar()
+  { s = s + t; }
+    ) [ t=LineText2()
+  { s = s + t; }
+    ]
+  { return s; }
+) |
+    t=Equals()
+  {
+    s = s + t;
+    return s;
+  }
+}
+
+
+/* *********************************************************** */
+
+String NewLine() :
+{
+  Token t;
+  String s = "";
+}
+{
+    ( t=<NEWLINE>
+  {
+    if (inList) {
+      if (noFinalPunctuation) {
+        s = s + ";";
+      }
+      inList = false;
+    }
+    noFinalPunctuation = true;
+    s = s + t.image;
+  }
+    )+
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+void LineFormatting() :
+{}
+{
+  ( <SHARP> | <STAR> | <SEMICOLON> | <COLON> )+
+}
+
+
+/* *********************************************************** */
+
+String LineText() :
+{
+  String t;
+  String s = "";
+}
+{
+    ( t=Remove()
+  {
+    noFinalPunctuation = true;
+    s = s + t;
+  }
+    | t=NormalChar()
+  {
+    noFinalPunctuation = true;
+    s = s + t;
+  }
+    | t=Marks()
+  { s = s + t; }
+    )+
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String LineText1() :
+{
+  String t;
+  String s = "";
+}
+{
+    ( t=Remove()
+  { s = s + t; }
+    | t=NormalChar()
+  { s = s + t; }
+    | t=Marks2()
+  { s = s + t; }
+    )+
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String LineText2() :
+{
+  String t;
+  String s = "";
+}
+{
+    ( t=Remove1()
+  {
+    noFinalPunctuation = true;
+    s = s + t;
+  }
+    | t=NormalChar()
+  {
+    noFinalPunctuation = true;
+    s = s + t;
+  }
+    | t=Marks()
+  { s = s + t; }
+    )+
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String NormalChar() :
+{
+  Token t;
+  String s = "";
+}
+{
+    ( t=<LOWERCASE>
+  { s = s + t.image; }
+    | t=<UPPERCASE>
+  { s = s + t.image; }
+    | t=<DIGIT>
+  { s = s + t.image; }
+    | t=<SPACE>
+  { s = s + t.image; }
+    | t=<OTHER>
+  { s = s + t.image; }
+    )+
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String NormalChar1() :
+{
+  Token t;
+  String s = "";
+}
+{
+    ( t=<LOWERCASE>
+  { s = s + t.image; }
+    | t=<UPPERCASE>
+  { s = s + t.image; }
+    | t=<DIGIT>
+  { s = s + t.image; }
+    | t=<OTHER>
+  { s = s + t.image; }
+    )+
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String Marks() :
+{
+  Token t;
+  String r;
+  String s = "";
+}
+{
+    ( t=<EQUAL>
+  { noFinalPunctuation = true;
+    s = s + t.image; }
+    | t=<TAGR>
+  { noFinalPunctuation = true;
+    s = s + t.image; }
+    | t=<QUOTE>
+  { noFinalPunctuation = true;
+    s = s + t.image; }
+    | t=<SLASH>
+  { noFinalPunctuation = true;
+    s = s + t.image; }
+    | t=<DASH>
+  { noFinalPunctuation = true;
+    s = s + t.image; }
+    | t=<SHARP>
+  { noFinalPunctuation = true;
+    s = s + t.image; }
+    | t=<STAR>
+  { noFinalPunctuation = true;
+    s = s + t.image; }
+    | t=<SEMICOLON>
+  { noFinalPunctuation = false;
+    s = s + t.image; }
+    | t=<COMMA>
+  { noFinalPunctuation = false;
+    s = s + t.image; }
+    | t=<PERIOD>
+  { noFinalPunctuation = false;
+    s = s + t.image; }
+    | t=<COLON>
+  { noFinalPunctuation = false;
+    s = s + t.image; }
+    | t=<BAR>
+  { noFinalPunctuation = true;
+    s = s + t.image; }
+    | t=<EXCLAM>
+  { noFinalPunctuation = false;
+    s = s + t.image; }
+    | t=<INTERR>
+  { noFinalPunctuation = false;
+    s = s + t.image; }
+    )+ 
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String Marks1() :
+{
+  Token t;
+  String r;
+  String s = "";
+}
+{
+    ( t=<TAGR>
+  { noFinalPunctuation = true;
+    s = s + t.image; }
+    | t=<QUOTE>
+  { noFinalPunctuation = true;
+    s = s + t.image; }
+    | t=<SLASH>
+  { noFinalPunctuation = true;
+    s = s + t.image; }
+    | t=<DASH>
+  { noFinalPunctuation = true;
+    s = s + t.image; }
+    | t=<COMMA>
+  { noFinalPunctuation = false;
+    s = s + t.image; }
+    | t=<PERIOD>
+  { noFinalPunctuation = false;
+    s = s + t.image; }
+    | t=<BAR>
+  { noFinalPunctuation = true;
+    s = s + t.image; }
+    | t=<EXCLAM>
+  { noFinalPunctuation = false;
+    s = s + t.image; }
+    | t=<INTERR>
+  { noFinalPunctuation = false;
+    s = s + t.image; }
+    )+ 
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String Marks2() :
+{
+  Token t;
+  String r;
+  String s = "";
+}
+{
+    ( t=<TAGR>
+  { s = s + t.image; }
+    | t=<QUOTE>
+  { s = s + t.image; }
+    | t=<SLASH>
+  { s = s + t.image; }
+    | t=<DASH>
+  { s = s + t.image; }
+    | t=<SHARP>
+  { s = s + t.image; }
+    | t=<STAR>
+  { s = s + t.image; }
+    | t=<SEMICOLON>
+  { s = s + t.image; }
+    | t=<COMMA>
+  { s = s + t.image; }
+    | t=<PERIOD>
+  { s = s + t.image; }
+    | t=<COLON>
+  { s = s + t.image; }
+    | t=<BAR>
+  { s = s + t.image; }
+    | t=<EXCLAM>
+  { s = s + t.image; }
+    | t=<INTERR>
+  { s = s + t.image; }
+    )+ 
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String Marks3() :
+{
+  Token t;
+  String r;
+  String s = "";
+}
+{
+    ( t=<EQUAL>
+  { s = s + t.image; }
+    | t=<TAGL>
+  { s = s + t.image; }
+    | t=<TAGR>
+  { s = s + t.image; }
+    | t=<SLASH>
+  { s = s + t.image; }
+    | t=<DASH>
+  { s = s + t.image; }
+    | t=<UNDERLINE>
+  { s = s + t.image; }
+    | t=<SHARP>
+  { s = s + t.image; }
+    | t=<STAR>
+  { s = s + t.image; }
+    | t=<SEMICOLON>
+  { s = s + t.image; }
+    | t=<COMMA>
+  { s = s + t.image; }
+    | t=<PERIOD>
+  { s = s + t.image; }
+    | t=<COLON>
+  { s = s + t.image; }
+    | t=<BAR>
+  { s = s + t.image; }
+    | t=<EXCLAM>
+  { s = s + t.image; }
+    | t=<INTERR>
+  { s = s + t.image; }
+    | t=<AMPERSAND>
+  { s = s + t.image; }
+    )+ 
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String Marks4() :
+{
+  Token t;
+  String r;
+  String s = "";
+}
+{
+    ( t=<DASH>
+  { s = s + t.image; }
+    | t=<UNDERLINE>
+  { s = s + t.image; }
+    | t=<SHARP>
+  { s = s + t.image; }
+    | t=<STAR>
+  { s = s + t.image; }
+    | t=<SEMICOLON>
+  { s = s + t.image; }
+    | t=<COMMA>
+  { s = s + t.image; }
+    | t=<PERIOD>
+  { s = s + t.image; }
+    | t=<COLON>
+  { s = s + t.image; }
+    | t=<BAR>
+  { s = s + t.image; }
+    | t=<EXCLAM>
+  { s = s + t.image; }
+    | t=<INTERR>
+  { s = s + t.image; }
+    | t=<AMPERSAND>
+  { s = s + t.image; }
+    )+ 
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String Equals() :
+{
+  String s = "";
+}
+{
+    <EQUAL> [ (<EQUAL>)+ s=LineText1() <EQUAL> (<EQUAL>)+
+  { return s + ".";}
+    ]
+  { return "="; }
+}
+
+
+/* *********************************************************** */
+
+String Remove() :
+{
+  String t;
+}
+{
+    ( <TAGL> [ t=Tag()
+  { return t; }
+    ]
+  { return "<"; }
+) |
+    Tag1()
+  { return ""; }
+|
+    Comment()
+  { return ""; }
+|
+    t=Symbol()
+  { return t; }
+|
+    t=Underline()
+  { return t; }
+|
+    t=Apostrophe()
+  { return t; }
+}
+
+
+/* *********************************************************** */
+
+String Remove1() :
+{
+  String t;
+}
+{
+    ( <TAGL> [ t=Tag()
+  { return t; }
+    ]
+  { return "<"; }
+) |
+    Comment()
+  { return ""; }
+|
+    t=Symbol()
+  { return t; }
+|
+    t=Underline()
+  { return t; }
+|
+    t=Apostrophe()
+  { return t; }
+}
+
+
+/* *********************************************************** */
+
+String Tag() :
+{
+  Token t;
+  String r = "";
+  String v = "";
+  String s = "";
+}
+{
+    (<SPACE>)* (t=<LOWERCASE>
+  { r = r + t.image; }
+    | t=<UPPERCASE>
+  { r = r + t.image; }
+    )+ [Html()] (<SPACE>)* ( ( <TAGR> [ ( v=LineText2()
+  { s = s + v; }
+    | v=NewLine()
+  { s = s + v; }
+    ) ( v=WellFormed2()
+  { s = s + v; }
+    )* ]
+  {
+    if ((r.equals("ref")) || (r.equals("gallery")) || (r.equals("math")) || (r.equals("source"))) {
+      return "";
+    } else {
+      return s;
+    }
+  }
+    ) | <SLASHTAGR> )
+  { return ""; }
+}
+
+
+/* *********************************************************** */
+
+void Tag1() :
+{}
+{
+    <TAGLSLASH> (<SPACE>)* (<LOWERCASE> | <UPPERCASE>)+ (<SPACE>)* <TAGR>
+}
+
+
+/* *********************************************************** */
+
+void Html() :
+{}
+{
+  ( <EQUAL> (<SPACE>)* ( ( <QUOTE> ( NotApostQuote() | <APOST> )* <QUOTE> ) | ( <APOST> ( NotApostQuote() | <QUOTE> )* <APOST> ) | NotApostQuote1() ) ( (<SPACE>)+ (<DIGIT>|<LOWERCASE>|<UPPERCASE>)+ (<SPACE>)* <EQUAL> (<SPACE>)* ( ( <QUOTE> ( NotApostQuote() | <APOST> )* <QUOTE> ) | ( <APOST> ( NotApostQuote() | <QUOTE> )* <APOST> ) | NotApostQuote1() ) )* )
+|
+( ( (<SPACE>)+ (<DIGIT>|<LOWERCASE>|<UPPERCASE>)+ (<SPACE>)* <EQUAL> (<SPACE>)* ( ( <QUOTE> ( NotApostQuote() | <APOST> )* <QUOTE> ) | ( <APOST> ( NotApostQuote() | <QUOTE> )* <APOST> ) | NotApostQuote1() ) )+ )
+}
+
+
+/* *********************************************************** */
+
+String NotApostQuote() :
+{
+  String t;
+  String s = "";
+}
+{
+    ( t=NormalChar()
+  { s = s + t; }
+    | t=Marks3()
+  { s = s + t; }
+    )+ 
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String NotApostQuote1() :
+{
+  String t;
+  String s = "";
+}
+{
+    ( t=NormalChar1()
+  { s = s + t; }
+    | t=Marks4()
+  { s = s + t; }
+    )+ 
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+void Comment() :
+{}
+{
+  <TAGLEXCLAMDASHDASH> [ WellFormed1() ] <DASHDASHTAGR>
+}
+
+
+/* *********************************************************** */
+
+/* A little simplified, normally &amp;...; could appear (very rare in practice) */
+String Symbol() :
+{
+  Token t;
+  String r = "";
+  String s = "";
+}
+{
+    <AMPERSAND> [ [ t=<SHARP>
+  { r = r + t.image; }
+    ] (t=<LOWERCASE>
+  { s = s + t.image; }
+    | t=<UPPERCASE>
+  { s = s + t.image; }
+    | t=<DIGIT>
+  { s = s + t.image; }
+    )+ [ <SEMICOLON>
+  {
+    if (s.equals("amp")) {
+      return "&";
+    } else {
+      return " ";
+    }
+  }
+    ]
+  { return "&" + r + s; }
+    ]
+  { return "&"; }
+}
+
+
+/* *********************************************************** */
+
+String Underline() :
+{}
+{
+    <UNDERLINE> [ <UNDERLINE> (<UPPERCASE>)+ <UNDERLINE> <UNDERLINE>
+  { return ""; }
+    ]
+  { return "_"; }
+}
+
+
+/* *********************************************************** */
+
+String Apostrophe() :
+{
+  String s = "";
+  int apost_counter = 0;
+  int counter;
+}
+{
+    ( <APOST>
+  { apost_counter++; }
+    )+
+  {
+    if ((apost_counter == 1) | (apost_counter == 4)) {
+      return "\'";
+    } else if ((apost_counter == 2) | (apost_counter == 3) | (apost_counter == 5)) {
+      return "";
+    } else {
+      for (counter = 0; counter < (apost_counter - 5); counter++) {
+        s = s + "\'";
+      }
+      return s;
+    }
+  }
+}
+
+
+/* *********************************************************** */

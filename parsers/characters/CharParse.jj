@@ -1,0 +1,948 @@
+
+options {
+  LOOKAHEAD = 2;
+  UNICODE_INPUT = true;
+  FORCE_LA_CHECK = true;
+}
+
+
+PARSER_BEGIN(CharParse)
+package parsers.characters;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+/** Character Parser (remove unwanted characters, to avoid problems with FreeLing). */
+public class CharParse {
+
+    static boolean firstArticle = true;
+    
+  /** Main entry point. */
+  public static void main(String args[]) throws ParseException, FileNotFoundException, IOException {
+	CharParse parser = new CharParse(new FileInputStream(args[0]));
+	String s = parser.Article();
+	FileOutputStream output = new FileOutputStream(args[1]);
+	final BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(output), 1024);
+	bw.write(s);
+	bw.close();
+  }
+
+}
+
+PARSER_END(CharParse)
+
+
+TOKEN :
+{
+   < ASCII9 : "\t" >
+|  < ASCII10 : "\n" >
+|  < ASCII12 : "\f" >
+|  < ASCII13 : "\r" >
+|  < ASCII32 : " " >
+|  < ASCII33 : "!" >
+|  < ASCII34 : "\"" >
+|  < ASCII35 : "#" >
+|  < ASCII36 : "$" >
+|  < ASCII37 : "%" >
+|  < ASCII38 : "&" >
+|  < ASCII39 : "\'" >
+|  < ASCII40 : "(" >
+|  < ASCII41 : ")" >
+|  < ASCII42 : "*" >
+|  < ASCII43 : "+" >
+|  < ASCII44 : "," >
+|  < ASCII45 : "-" >
+|  < ASCII46 : "." >
+|  < ASCII47 : "/" >
+|  < ASCII48 : "0" >
+|  < ASCII49 : "1" >
+|  < ASCII50 : "2" >
+|  < ASCII51 : "3" >
+|  < ASCII52 : "4" >
+|  < ASCII53 : "5" >
+|  < ASCII54 : "6" >
+|  < ASCII55 : "7" >
+|  < ASCII56 : "8" >
+|  < ASCII57 : "9" >
+|  < ASCII58 : ":" >
+|  < ASCII59 : ";" >
+|  < ASCII60 : "<" >
+|  < ASCII61 : "=" >
+|  < ASCII62 : ">" >
+|  < ASCII63 : "?" >
+|  < ASCII64 : "@" >
+|  < ASCII65 : "A" >
+|  < ASCII66 : "B" >
+|  < ASCII67 : "C" >
+|  < ASCII68 : "D" >
+|  < ASCII69 : "E" >
+|  < ASCII70 : "F" >
+|  < ASCII71 : "G" >
+|  < ASCII72 : "H" >
+|  < ASCII73 : "I" >
+|  < ASCII74 : "J" >
+|  < ASCII75 : "K" >
+|  < ASCII76 : "L" >
+|  < ASCII77 : "M" >
+|  < ASCII78 : "N" >
+|  < ASCII79 : "O" >
+|  < ASCII80 : "P" >
+|  < ASCII81 : "Q" >
+|  < ASCII82 : "R" >
+|  < ASCII83 : "S" >
+|  < ASCII84 : "T" >
+|  < ASCII85 : "U" >
+|  < ASCII86 : "V" >
+|  < ASCII87 : "W" >
+|  < ASCII88 : "X" >
+|  < ASCII89 : "Y" >
+|  < ASCII90 : "Z" >
+|  < ASCII91 : "[" >
+|  < ASCII92 : "\\" >
+|  < ASCII93 : "]" >
+|  < ASCII94 : "^" >
+|  < ASCII95 : "_" >
+|  < ASCII96 : "`" >
+|  < ASCII97 : "a" >
+|  < ASCII98 : "b" >
+|  < ASCII99 : "c" >
+|  < ASCII100 : "d" >
+|  < ASCII101 : "e" >
+|  < ASCII102 : "f" >
+|  < ASCII103 : "g" >
+|  < ASCII104 : "h" >
+|  < ASCII105 : "i" >
+|  < ASCII106 : "j" >
+|  < ASCII107 : "k" >
+|  < ASCII108 : "l" >
+|  < ASCII109 : "m" >
+|  < ASCII110 : "n" >
+|  < ASCII111 : "o" >
+|  < ASCII112 : "p" >
+|  < ASCII113 : "q" >
+|  < ASCII114 : "r" >
+|  < ASCII115 : "s" >
+|  < ASCII116 : "t" >
+|  < ASCII117 : "u" >
+|  < ASCII118 : "v" >
+|  < ASCII119 : "w" >
+|  < ASCII120 : "x" >
+|  < ASCII121 : "y" >
+|  < ASCII122 : "z" >
+|  < ASCII123 : "{" >
+|  < ASCII124 : "|" >
+|  < ASCII125 : "}" >
+|  < ASCII126 : "~" >
+
+|  < ISO160 : "\u00a0" >
+|  < ISO161 : "\u00a1" >
+|  < ISO162 : "\u00a2" >
+|  < ISO163 : "\u00a3" >
+|  < ISO164 : "\u20ac" >
+|  < ISO165 : "\u00a5" >
+|  < ISO166 : "\u0160" >
+|  < ISO167 : "\u00a7" >
+|  < ISO168 : "\u0161" >
+|  < ISO169 : "\u00a9" >
+|  < ISO170 : "\u00aa" >
+|  < ISO171 : "\u00ab" >
+|  < ISO172 : "\u00ac" >
+|  < ISO173 : "\u00ad" >
+|  < ISO174 : "\u00ae" >
+|  < ISO175 : "\u00af" >
+|  < ISO176 : "\u00b0" >
+|  < ISO177 : "\u00b1" >
+|  < ISO178 : "\u00b2" >
+|  < ISO179 : "\u00b3" >
+|  < ISO180 : "\u017d" >
+|  < ISO181 : "\u00b5" >
+|  < ISO182 : "\u00b6" >
+|  < ISO183 : "\u00b7" >
+|  < ISO184 : "\u017e" >
+|  < ISO185 : "\u00b9" >
+|  < ISO186 : "\u00ba" >
+|  < ISO187 : "\u00bb" >
+|  < ISO188 : "\u0152" >
+|  < ISO189 : "\u0153" >
+|  < ISO190 : "\u0178" >
+|  < ISO191 : "\u00bf" >
+|  < ISO192 : "\u00c0" >
+|  < ISO193 : "\u00c1" >
+|  < ISO194 : "\u00c2" >
+|  < ISO195 : "\u00c3" >
+|  < ISO196 : "\u00c4" >
+|  < ISO197 : "\u00c5" >
+|  < ISO198 : "\u00c6" >
+|  < ISO199 : "\u00c7" >
+|  < ISO200 : "\u00c8" >
+|  < ISO201 : "\u00c9" >
+|  < ISO202 : "\u00ca" >
+|  < ISO203 : "\u00cb" >
+|  < ISO204 : "\u00cc" >
+|  < ISO205 : "\u00cd" >
+|  < ISO206 : "\u00ce" >
+|  < ISO207 : "\u00cf" >
+|  < ISO208 : "\u00d0" >
+|  < ISO209 : "\u00d1" >
+|  < ISO210 : "\u00d2" >
+|  < ISO211 : "\u00d3" >
+|  < ISO212 : "\u00d4" >
+|  < ISO213 : "\u00d5" >
+|  < ISO214 : "\u00d6" >
+|  < ISO215 : "\u00d7" >
+|  < ISO216 : "\u00d8" >
+|  < ISO217 : "\u00d9" >
+|  < ISO218 : "\u00da" >
+|  < ISO219 : "\u00db" >
+|  < ISO220 : "\u00dc" >
+|  < ISO221 : "\u00dd" >
+|  < ISO222 : "\u00de" >
+|  < ISO223 : "\u00df" >
+|  < ISO224 : "\u00e0" >
+|  < ISO225 : "\u00e1" >
+|  < ISO226 : "\u00e2" >
+|  < ISO227 : "\u00e3" >
+|  < ISO228 : "\u00e4" >
+|  < ISO229 : "\u00e5" >
+|  < ISO230 : "\u00e6" >
+|  < ISO231 : "\u00e7" >
+|  < ISO232 : "\u00e8" >
+|  < ISO233 : "\u00e9" >
+|  < ISO234 : "\u00ea" >
+|  < ISO235 : "\u00eb" >
+|  < ISO236 : "\u00ec" >
+|  < ISO237 : "\u00ed" >
+|  < ISO238 : "\u00ee" >
+|  < ISO239 : "\u00ef" >
+|  < ISO240 : "\u00f0" >
+|  < ISO241 : "\u00f1" >
+|  < ISO242 : "\u00f2" >
+|  < ISO243 : "\u00f3" >
+|  < ISO244 : "\u00f4" >
+|  < ISO245 : "\u00f5" >
+|  < ISO246 : "\u00f6" >
+|  < ISO247 : "\u00f7" >
+|  < ISO248 : "\u00f8" >
+|  < ISO249 : "\u00f9" >
+|  < ISO250 : "\u00fa" >
+|  < ISO251 : "\u00fb" >
+|  < ISO252 : "\u00fc" >
+|  < ISO253 : "\u00fd" >
+|  < ISO254 : "\u00fe" >
+|  < ISO255 : "\u00ff" >
+
+|  < REPLACE1 : "\u00c2\u00ab" >
+|  < REPLACE2 : "\u00c2\u00ad" >
+|  < REPLACE3 : "\u00c2\u00bb" >
+|  < REPLACE4 : "\u00e2\u0080\u0093" >
+|  < REPLACE5 : "\u00e2\u0080\u0094" >
+|  < REPLACE6 : "\u00e2\u0080\u0095" >
+|  < REPLACE7 : "\u00e2\u0080\u0098" >
+|  < REPLACE8 : "\u00e2\u0080\u0099" >
+|  < REPLACE9 : "\u00e2\u0080\u009a" >
+|  < REPLACE10 : "\u00e2\u0080\u009b" >
+|  < REPLACE11 : "\u00e2\u0080\u009c" >
+|  < REPLACE12 : "\u00e2\u0080\u009d" >
+|  < REPLACE13 : "\u00e2\u0080\u009e" >
+|  < REPLACE14 : "\u00e2\u0080\u009f" >
+|  < REPLACE15 : "\u00e2\u0080\u0160" >
+
+| < OTHER : ~[] >
+}
+
+
+
+/* *********************************************************** */
+
+/** Root production. */
+String Article() :
+{
+  String s = "";
+  String r;
+  Token t;
+}
+{
+    ( r = Ascii()
+  { s = s + r; }
+|
+    r = Iso()
+  { s = s + r; }
+|
+    r = Replace()
+  { s = s + r; }
+|
+    t = <OTHER>
+  { s = s + " "; }
+    )*
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String Ascii() :
+{
+  Token t;
+  String s = "";
+}
+{
+    ( t = <ASCII9>
+  { s = s + t.image; }
+|
+    t = <ASCII10>
+  { s = s + t.image; }
+|
+    t = <ASCII12>
+  { s = s + t.image; }
+|
+    t = <ASCII13>
+  { s = s + t.image; }
+|
+    t = <ASCII32>
+  { s = s + t.image; }
+|
+    t = <ASCII33>
+  { s = s + t.image; }
+|
+    t = <ASCII34>
+  { s = s + t.image; }
+|
+    t = <ASCII35>
+  { s = s + t.image; }
+|
+    t = <ASCII36>
+  { s = s + t.image; }
+|
+    t = <ASCII37>
+  { s = s + t.image; }
+|
+    t = <ASCII38>
+  { s = s + t.image; }
+|
+    t = <ASCII39>
+  { s = s + t.image; }
+|
+    t = <ASCII40>
+  { s = s + t.image; }
+|
+    t = <ASCII41>
+  { s = s + t.image; }
+|
+    t = <ASCII42>
+  { s = s + t.image; }
+|
+    t = <ASCII43>
+  { s = s + t.image; }
+|
+    t = <ASCII44>
+  { s = s + t.image; }
+|
+    t = <ASCII45>
+  { s = s + t.image; }
+|
+    t = <ASCII46>
+  { s = s + t.image; }
+|
+    t = <ASCII47>
+  { s = s + t.image; }
+|
+    t = <ASCII48>
+  { s = s + t.image; }
+|
+    t = <ASCII49>
+  { s = s + t.image; }
+|
+    t = <ASCII50>
+  { s = s + t.image; }
+|
+    t = <ASCII51>
+  { s = s + t.image; }
+|
+    t = <ASCII52>
+  { s = s + t.image; }
+|
+    t = <ASCII53>
+  { s = s + t.image; }
+|
+    t = <ASCII54>
+  { s = s + t.image; }
+|
+    t = <ASCII55>
+  { s = s + t.image; }
+|
+    t = <ASCII56>
+  { s = s + t.image; }
+|
+    t = <ASCII57>
+  { s = s + t.image; }
+|
+    t = <ASCII58>
+  { s = s + t.image; }
+|
+    t = <ASCII59>
+  { s = s + t.image; }
+|
+    t = <ASCII60>
+  { s = s + t.image; }
+|
+    t = <ASCII61>
+  { s = s + t.image; }
+|
+    t = <ASCII62>
+  { s = s + t.image; }
+|
+    t = <ASCII63>
+  { s = s + t.image; }
+|
+    t = <ASCII64>
+  { s = s + t.image; }
+|
+    t = <ASCII65>
+  { s = s + t.image; }
+|
+    t = <ASCII66>
+  { s = s + t.image; }
+|
+    t = <ASCII67>
+  { s = s + t.image; }
+|
+    t = <ASCII68>
+  { s = s + t.image; }
+|
+    t = <ASCII69>
+  { s = s + t.image; }
+|
+    t = <ASCII70>
+  { s = s + t.image; }
+|
+    t = <ASCII71>
+  { s = s + t.image; }
+|
+    t = <ASCII72>
+  { s = s + t.image; }
+|
+    t = <ASCII73>
+  { s = s + t.image; }
+|
+    t = <ASCII74>
+  { s = s + t.image; }
+|
+    t = <ASCII75>
+  { s = s + t.image; }
+|
+    t = <ASCII76>
+  { s = s + t.image; }
+|
+    t = <ASCII77>
+  { s = s + t.image; }
+|
+    t = <ASCII78>
+  { s = s + t.image; }
+|
+    t = <ASCII79>
+  { s = s + t.image; }
+|
+    t = <ASCII80>
+  { s = s + t.image; }
+|
+    t = <ASCII81>
+  { s = s + t.image; }
+|
+    t = <ASCII82>
+  { s = s + t.image; }
+|
+    t = <ASCII83>
+  { s = s + t.image; }
+|
+    t = <ASCII84>
+  { s = s + t.image; }
+|
+    t = <ASCII85>
+  { s = s + t.image; }
+|
+    t = <ASCII86>
+  { s = s + t.image; }
+|
+    t = <ASCII87>
+  { s = s + t.image; }
+|
+    t = <ASCII88>
+  { s = s + t.image; }
+|
+    t = <ASCII89>
+  { s = s + t.image; }
+|
+    t = <ASCII90>
+  { s = s + t.image; }
+|
+    t = <ASCII91>
+  { s = s + t.image; }
+|
+    t = <ASCII92>
+  { s = s + t.image; }
+|
+    t = <ASCII93>
+  { s = s + t.image; }
+|
+    t = <ASCII94>
+  { s = s + t.image; }
+|
+    t = <ASCII95>
+  { s = s + t.image; }
+|
+    t = <ASCII96>
+  { s = s + t.image; }
+|
+    t = <ASCII97>
+  { s = s + t.image; }
+|
+    t = <ASCII98>
+  { s = s + t.image; }
+|
+    t = <ASCII99>
+  { s = s + t.image; }
+|
+    t = <ASCII100>
+  { s = s + t.image; }
+|
+    t = <ASCII101>
+  { s = s + t.image; }
+|
+    t = <ASCII102>
+  { s = s + t.image; }
+|
+    t = <ASCII103>
+  { s = s + t.image; }
+|
+    t = <ASCII104>
+  { s = s + t.image; }
+|
+    t = <ASCII105>
+  { s = s + t.image; }
+|
+    t = <ASCII106>
+  { s = s + t.image; }
+|
+    t = <ASCII107>
+  { s = s + t.image; }
+|
+    t = <ASCII108>
+  { s = s + t.image; }
+|
+    t = <ASCII109>
+  { s = s + t.image; }
+|
+    t = <ASCII110>
+  { s = s + t.image; }
+|
+    t = <ASCII111>
+  { s = s + t.image; }
+|
+    t = <ASCII112>
+  { s = s + t.image; }
+|
+    t = <ASCII113>
+  { s = s + t.image; }
+|
+    t = <ASCII114>
+  { s = s + t.image; }
+|
+    t = <ASCII115>
+  { s = s + t.image; }
+|
+    t = <ASCII116>
+  { s = s + t.image; }
+|
+    t = <ASCII117>
+  { s = s + t.image; }
+|
+    t = <ASCII118>
+  { s = s + t.image; }
+|
+    t = <ASCII119>
+  { s = s + t.image; }
+|
+    t = <ASCII120>
+  { s = s + t.image; }
+|
+    t = <ASCII121>
+  { s = s + t.image; }
+|
+    t = <ASCII122>
+  { s = s + t.image; }
+|
+    t = <ASCII123>
+  { s = s + t.image; }
+|
+    t = <ASCII124>
+  { s = s + t.image; }
+|
+    t = <ASCII125>
+  { s = s + t.image; }
+|
+    t = <ASCII126>
+  { s = s + t.image; }
+    )+
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String Iso() :
+{
+  Token t;
+  String s = "";
+}
+{
+    ( t = <ISO160>
+  { s = s + t.image; }
+|
+    t = <ISO161>
+  { s = s + t.image; }
+|
+    t = <ISO162>
+  { s = s + t.image; }
+|
+    t = <ISO163>
+  { s = s + t.image; }
+|
+    t = <ISO164>
+  { s = s + t.image; }
+|
+    t = <ISO165>
+  { s = s + t.image; }
+|
+    t = <ISO166>
+  { s = s + t.image; }
+|
+    t = <ISO167>
+  { s = s + t.image; }
+|
+    t = <ISO168>
+  { s = s + t.image; }
+|
+    t = <ISO169>
+  { s = s + t.image; }
+|
+    t = <ISO170>
+  { s = s + t.image; }
+|
+    t = <ISO171>
+  { s = s + t.image; }
+|
+    t = <ISO172>
+  { s = s + t.image; }
+|
+    t = <ISO173>
+  { s = s + t.image; }
+|
+    t = <ISO174>
+  { s = s + t.image; }
+|
+    t = <ISO175>
+  { s = s + t.image; }
+|
+    t = <ISO176>
+  { s = s + t.image; }
+|
+    t = <ISO177>
+  { s = s + t.image; }
+|
+    t = <ISO178>
+  { s = s + t.image; }
+|
+    t = <ISO179>
+  { s = s + t.image; }
+|
+    t = <ISO180>
+  { s = s + t.image; }
+|
+    t = <ISO181>
+  { s = s + t.image; }
+|
+    t = <ISO182>
+  { s = s + t.image; }
+|
+    t = <ISO183>
+  { s = s + t.image; }
+|
+    t = <ISO184>
+  { s = s + t.image; }
+|
+    t = <ISO185>
+  { s = s + t.image; }
+|
+    t = <ISO186>
+  { s = s + t.image; }
+|
+    t = <ISO187>
+  { s = s + t.image; }
+|
+    t = <ISO188>
+  { s = s + t.image; }
+|
+    t = <ISO189>
+  { s = s + t.image; }
+|
+    t = <ISO190>
+  { s = s + t.image; }
+|
+    t = <ISO191>
+  { s = s + t.image; }
+|
+    t = <ISO192>
+  { s = s + t.image; }
+|
+    t = <ISO193>
+  { s = s + t.image; }
+|
+    t = <ISO194>
+  { s = s + t.image; }
+|
+    t = <ISO195>
+  { s = s + t.image; }
+|
+    t = <ISO196>
+  { s = s + t.image; }
+|
+    t = <ISO197>
+  { s = s + t.image; }
+|
+    t = <ISO198>
+  { s = s + t.image; }
+|
+    t = <ISO199>
+  { s = s + t.image; }
+|
+    t = <ISO200>
+  { s = s + t.image; }
+|
+    t = <ISO201>
+  { s = s + t.image; }
+|
+    t = <ISO202>
+  { s = s + t.image; }
+|
+    t = <ISO203>
+  { s = s + t.image; }
+|
+    t = <ISO204>
+  { s = s + t.image; }
+|
+    t = <ISO205>
+  { s = s + t.image; }
+|
+    t = <ISO206>
+  { s = s + t.image; }
+|
+    t = <ISO207>
+  { s = s + t.image; }
+|
+    t = <ISO208>
+  { s = s + t.image; }
+|
+    t = <ISO209>
+  { s = s + t.image; }
+|
+    t = <ISO210>
+  { s = s + t.image; }
+|
+    t = <ISO211>
+  { s = s + t.image; }
+|
+    t = <ISO212>
+  { s = s + t.image; }
+|
+    t = <ISO213>
+  { s = s + t.image; }
+|
+    t = <ISO214>
+  { s = s + t.image; }
+|
+    t = <ISO215>
+  { s = s + t.image; }
+|
+    t = <ISO216>
+  { s = s + t.image; }
+|
+    t = <ISO217>
+  { s = s + t.image; }
+|
+    t = <ISO218>
+  { s = s + t.image; }
+|
+    t = <ISO219>
+  { s = s + t.image; }
+|
+    t = <ISO220>
+  { s = s + t.image; }
+|
+    t = <ISO221>
+  { s = s + t.image; }
+|
+    t = <ISO222>
+  { s = s + t.image; }
+|
+    t = <ISO223>
+  { s = s + t.image; }
+|
+    t = <ISO224>
+  { s = s + t.image; }
+|
+    t = <ISO225>
+  { s = s + t.image; }
+|
+    t = <ISO226>
+  { s = s + t.image; }
+|
+    t = <ISO227>
+  { s = s + t.image; }
+|
+    t = <ISO228>
+  { s = s + t.image; }
+|
+    t = <ISO229>
+  { s = s + t.image; }
+|
+    t = <ISO230>
+  { s = s + t.image; }
+|
+    t = <ISO231>
+  { s = s + t.image; }
+|
+    t = <ISO232>
+  { s = s + t.image; }
+|
+    t = <ISO233>
+  { s = s + t.image; }
+|
+    t = <ISO234>
+  { s = s + t.image; }
+|
+    t = <ISO235>
+  { s = s + t.image; }
+|
+    t = <ISO236>
+  { s = s + t.image; }
+|
+    t = <ISO237>
+  { s = s + t.image; }
+|
+    t = <ISO238>
+  { s = s + t.image; }
+|
+    t = <ISO239>
+  { s = s + t.image; }
+|
+    t = <ISO240>
+  { s = s + t.image; }
+|
+    t = <ISO241>
+  { s = s + t.image; }
+|
+    t = <ISO242>
+  { s = s + t.image; }
+|
+    t = <ISO243>
+  { s = s + t.image; }
+|
+    t = <ISO244>
+  { s = s + t.image; }
+|
+    t = <ISO245>
+  { s = s + t.image; }
+|
+    t = <ISO246>
+  { s = s + t.image; }
+|
+    t = <ISO247>
+  { s = s + t.image; }
+|
+    t = <ISO248>
+  { s = s + t.image; }
+|
+    t = <ISO249>
+  { s = s + t.image; }
+|
+    t = <ISO250>
+  { s = s + t.image; }
+|
+    t = <ISO251>
+  { s = s + t.image; }
+|
+    t = <ISO252>
+  { s = s + t.image; }
+|
+    t = <ISO253>
+  { s = s + t.image; }
+|
+    t = <ISO254>
+  { s = s + t.image; }
+|
+    t = <ISO255>
+  { s = s + t.image; }
+    )+
+  { return s; }
+}
+
+
+/* *********************************************************** */
+
+String Replace() :
+{
+  String s = "";
+}
+{
+    ( <REPLACE1>
+  { s = s + "\""; }
+|
+    <REPLACE2>
+|
+    <REPLACE3>
+  { s = s + "\""; }
+|
+    <REPLACE4>
+  { s = s + " - "; }
+|
+    <REPLACE5>
+  { s = s + " - "; }
+|
+    <REPLACE6>
+  { s = s + " - "; }
+|
+    <REPLACE7>
+  { s = s + "\""; }
+|
+    <REPLACE8>
+  { s = s + "\""; }
+|
+    <REPLACE9>
+  { s = s + "\""; }
+|
+    <REPLACE10>
+  { s = s + "\""; }
+|
+    <REPLACE11>
+  { s = s + "\""; }
+|
+    <REPLACE12>
+  { s = s + "\""; }
+|
+    <REPLACE13>
+  { s = s + "\""; }
+|
+    <REPLACE14>
+  { s = s + "\""; }
+|
+    <REPLACE15>
+  { s = s + "..."; }
+    )+
+  { return s; }
+}
+
+

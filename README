@@ -1,0 +1,16 @@
+This is a README for the JavaCC parsers found in parsers/ which make up the WikiParser.
+
+Philosophy:
+
+The job of parsing the Wikipedia articles is actually accomplished by 3 parsers.
+- A preliminary parser (called Parser 0), filters out any characters which are not in ISO/IEC 8859-15.
+- The "first" parser removes the bulk of wiki markup and adapts the formatting to NLP purposes.
+- The second parser deals with the wiki markup structures from which text must be extracted, such as links.
+
+Pros and Cons, Advantages and Disadvantages:
+
+- These parsers would probably have been written much better if I had previously learnt to work with JavaCC, or at least had access to a manual describing in detail how to use it.
+- Despite the amateurish aspect, the parsers accomplish fairly well the job of extracting the text in Natural Language of Wikipedia articles, removing wiki markup and elements which are not part of the actual text, such as image filenames etc.
+- Parsers 1 and 2 could probably be combined, so as to obtain a one-pass parser, but even with two passes, the parsers do the job quite rapidly, so it's probably not worth the trouble; not to mention that the resulting grammar would be frighteningly complicated.
+- If any obscure questions need to be answered... if any details need to be further explained... I can be contacted at samuel.reese@supaero.org and will attempt to help if I possibly can.
+
